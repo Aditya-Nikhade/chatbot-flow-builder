@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path'; // Import the 'path' module
-
-// https://vitejs.dev/config/
+import path from 'path';
+import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      // eslint-disable-next-line no-undef
       '@': path.resolve(__dirname, './src'), // Set up the '@' alias
     },
   },
