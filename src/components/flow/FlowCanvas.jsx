@@ -8,6 +8,7 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
+  MarkerType, // <-- 1. IMPORT MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import useFlowStore from '@/store/flowStore';
@@ -17,6 +18,19 @@ import { nanoid } from 'nanoid';
 const nodeTypes = {
   textNode: TextNode,
 };
+
+// --- 2. DEFINE YOUR POLISHED DEFAULT EDGE OPTIONS ---
+const defaultEdgeOptions = {
+  style: {
+    strokeWidth: 2, // Make the line a bit thicker
+    stroke: '#6b7280', // A nice professional gray (Tailwind's gray-500)
+  },
+  markerEnd: {
+    type: MarkerType.ArrowClosed, // The type of the arrowhead (filled)
+    color: '#6b7280', // Match the line color
+  },
+};
+// ---------------------------------------------------
 
 export default function FlowCanvas() {
   // Get state and actions from the global store
@@ -156,6 +170,7 @@ export default function FlowCanvas() {
         onDragOver={onDragOver}
         onDrop={onDrop}
         fitView
+        defaultEdgeOptions={defaultEdgeOptions} // <-- 3. PASS THE OPTIONS AS A PROP
       >
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>
