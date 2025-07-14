@@ -1,3 +1,5 @@
+// src/components/flow/FlowCanvas.jsx
+
 import { useCallback, useRef, useEffect } from 'react';
 import {
   ReactFlow,
@@ -6,6 +8,8 @@ import {
   useNodesState,
   useEdgesState,
   addEdge,
+  applyNodeChanges,
+  applyEdgeChanges,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import useFlowStore from '@/store/flowStore';
@@ -24,19 +28,46 @@ export default function FlowCanvas() {
   const setStoreEdges = useFlowStore((state) => state.setEdges);
   const setSelectedNodeId = useFlowStore((state) => state.setSelectedNodeId);
 
-  // Use local state, initialized from the store
-  const [nodes, setNodes, onNodesChange] = useNodesState(storeNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(storeEdges);
+  // Use local state, initialized from the store.
+  // We rename the handlers from the hook to avoid name conflicts.
+  const [nodes, setNodes, onNodesChangeLocal] = useNodesState(storeNodes);
+  const [edges, setEdges, onEdgesChangeLocal] = useEdgesState(storeEdges);
 
-  // Sync store changes (like a label update) TO the local state
+  // --- START: CORRECTLY INTEGRATED BUG FIX ---
+  // Create wrapped handlers that update both local and global state.
+  const onNodesChange = useCallback(
+    (changes) => {
+      // First, apply the changes to the local state handler from the hook
+      onNodesChangeLocal(changes);
+
+      // Then, calculate the new state and sync it to the global store
+      const newNodes = applyNodeChanges(changes, nodes);
+      setStoreNodes(newNodes);
+    },
+    [onNodesChangeLocal, nodes, setStoreNodes]
+  );
+
+  const onEdgesChange = useCallback(
+    (changes) => {
+      onEdgesChangeLocal(changes);
+      const newEdges = applyEdgeChanges(changes, edges);
+      setStoreEdges(newEdges);
+    },
+    [onEdgesChangeLocal, edges, setStoreEdges]
+  );
+  // --- END: CORRECTLY INTEGRATED BUG FIX ---
+
+  // This effect syncs changes from the store (like a label update) TO the local state.
   useEffect(() => {
     setNodes(storeNodes);
   }, [storeNodes, setNodes]);
 
+  // This effect syncs edge changes from the store TO the local state.
   useEffect(() => {
     setEdges(storeEdges);
   }, [storeEdges, setEdges]);
 
+  // The rest of the handlers remain the same...
   const onConnect = useCallback(
     (connection) => {
       const sourceHasEdge = edges.some(
@@ -91,6 +122,7 @@ export default function FlowCanvas() {
     (_, node) => setSelectedNodeId(node.id),
     [setSelectedNodeId]
   );
+
   const onPaneClick = useCallback(
     () => setSelectedNodeId(null),
     [setSelectedNodeId]
@@ -101,8 +133,8 @@ export default function FlowCanvas() {
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        onNodesChange={onNodesChange} // Use our new wrapped handler
+        onEdgesChange={onEdgesChange} // Use our new wrapped handler
         onConnect={onConnect}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}

@@ -13,7 +13,7 @@ export default function FlowBuilderPage() {
           <div className="w-3/4 h-full">
             <FlowCanvas />
           </div>
-          <div className="w-1/4 h-full border-l border-gray-200 bg-white">
+          <div className="w-1/4 h-full border-l border-gray-200 bg-white overflow-hidden">
             <SidePanel />
           </div>
         </ReactFlowProvider>
