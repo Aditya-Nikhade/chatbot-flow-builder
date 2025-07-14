@@ -27,14 +27,14 @@ export default function FlowCanvas() {
   const setStoreNodes = useFlowStore((state) => state.setNodes);
   const setStoreEdges = useFlowStore((state) => state.setEdges);
   const setSelectedNodeId = useFlowStore((state) => state.setSelectedNodeId);
+  const loadFlow = useFlowStore((state) => state.loadFlow);
 
   // Use local state, initialized from the store.
-  // We rename the handlers from the hook to avoid name conflicts.
   const [nodes, setNodes, onNodesChangeLocal] = useNodesState(storeNodes);
   const [edges, setEdges, onEdgesChangeLocal] = useEdgesState(storeEdges);
 
-  // --- START: CORRECTLY INTEGRATED BUG FIX ---
-  // Create wrapped handlers that update both local and global state.
+  const showEmptyState = nodes.length == 0;
+
   const onNodesChange = useCallback(
     (changes) => {
       // First, apply the changes to the local state handler from the hook
@@ -55,19 +55,20 @@ export default function FlowCanvas() {
     },
     [onEdgesChangeLocal, edges, setStoreEdges]
   );
-  // --- END: CORRECTLY INTEGRATED BUG FIX ---
 
-  // This effect syncs changes from the store (like a label update) TO the local state.
   useEffect(() => {
     setNodes(storeNodes);
   }, [storeNodes, setNodes]);
 
-  // This effect syncs edge changes from the store TO the local state.
   useEffect(() => {
     setEdges(storeEdges);
   }, [storeEdges, setEdges]);
 
-  // The rest of the handlers remain the same...
+  useEffect(() => {
+    loadFlow();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onConnect = useCallback(
     (connection) => {
       const sourceHasEdge = edges.some(
@@ -129,12 +130,19 @@ export default function FlowCanvas() {
   );
 
   return (
-    <div className="h-full w-full" ref={reactFlowWrapper}>
+    <div className="relative h-full w-full" ref={reactFlowWrapper}>
+      {showEmptyState && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-gray-400">
+          <p className="text-2xl font-bold">Chatbot Flow Builder</p>
+          <p>Drag a node from the right panel to get started!</p>
+        </div>
+      )}
+
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange} // Use our new wrapped handler
-        onEdgesChange={onEdgesChange} // Use our new wrapped handler
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}

@@ -1,4 +1,3 @@
-// src/components/flow/SidePanel.jsx
 import useFlowStore from '@/store/flowStore';
 import NodesPanel from './NodesPanel';
 import SettingsPanel from './SettingsPanel';

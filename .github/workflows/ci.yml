@@ -1,0 +1,31 @@
+name: BiteSpeed CI
+
+on: [push, pull_request]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a recent LTS version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run Playwright tests
+        run: npm run test # Assuming your test script is "test"
+
+      - name: Build project
+        run: npm run build

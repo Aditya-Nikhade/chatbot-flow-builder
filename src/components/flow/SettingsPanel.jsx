@@ -1,4 +1,3 @@
-// src/components/flow/SettingsPanel.jsx
 import { IoMdArrowBack } from 'react-icons/io';
 import useFlowStore from '@/store/flowStore'; // Import the store
 import PropTypes from 'prop-types';
