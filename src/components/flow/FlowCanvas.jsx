@@ -1,5 +1,3 @@
-// src/components/flow/FlowCanvas.jsx
-
 import { useCallback, useRef, useEffect } from 'react';
 import {
   ReactFlow,
