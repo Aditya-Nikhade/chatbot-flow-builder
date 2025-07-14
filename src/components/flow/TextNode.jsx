@@ -17,6 +17,7 @@ export default function TextNode({ data, selected }) {
   const borderClass = selected ? 'border-blue-500' : 'border-gray-300';
 
   return (
+    // Custom node UI for the flow builder
     <div className={`bg-white rounded-lg shadow-md border ${borderClass} w-64`}>
       {/* Node Header */}
       <div className="bg-teal-200 px-3 py-1 rounded-t-lg flex items-center justify-between">

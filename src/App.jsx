@@ -1,4 +1,4 @@
-import '@xyflow/react/dist/style.css';
+import '@xyflow/react/dist/style.css'; //This is required for the react-flow to work.
 import FlowBuilderPage from './pages/Flowbuilder';
 
 function App() {

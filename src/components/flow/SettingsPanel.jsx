@@ -1,6 +1,5 @@
 import { IoMdArrowBack } from 'react-icons/io';
 import useFlowStore from '@/store/flowStore'; // Import the store
-import PropTypes from 'prop-types';
 
 export default function SettingsPanel() {
   const nodes = useFlowStore((state) => state.nodes);
@@ -8,19 +7,22 @@ export default function SettingsPanel() {
   const setSelectedNodeId = useFlowStore((state) => state.setSelectedNodeId);
   const updateNodeLabel = useFlowStore((state) => state.updateNodeLabel);
 
+  // Find the currently selected node
   const selectedNode = nodes.find((node) => node.id === selectedNodeId);
 
+  // Handle label (text) change for the selected node
   const handleLabelChange = (event) => {
     if (selectedNodeId) {
       updateNodeLabel(selectedNodeId, event.target.value);
     }
   };
 
+  // Go back to node selection (deselect node)
   const goBack = () => {
     setSelectedNodeId(null);
   };
 
-  // If no node is selected, render nothing (or a fallback UI)
+  // If no node is selected, render nothing
   if (!selectedNode) {
     return null;
   }
@@ -42,6 +44,7 @@ export default function SettingsPanel() {
         >
           Text
         </label>
+        {/* Textarea for editing the node's label */}
         <textarea
           id="text-input"
           rows={4}

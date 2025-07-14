@@ -1,6 +1,7 @@
 import { NODE_TYPES } from '@/config/node.config.jsx';
 
 export default function NodesPanel() {
+  // Handle drag start for a node type
   const onDragStart = (event, nodeType, defaultData) => {
     const data = JSON.stringify({ type: nodeType, defaultData });
     event.dataTransfer.setData('application/reactflow', data);
@@ -10,6 +11,7 @@ export default function NodesPanel() {
   return (
     <aside>
       <div className="p-4 grid grid-cols-2 gap-4">
+        {/* Render draggable node types from config */}
         {NODE_TYPES.map(({ type, label, icon, defaultData }) => (
           <div
             key={type}

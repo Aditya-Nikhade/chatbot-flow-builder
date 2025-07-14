@@ -7,6 +7,7 @@ export default function SidePanel() {
 
   return (
     <div className="h-full">
+      {/* Show draggable node types if no node is selected, otherwise show settings for the selected node */}
       {selectedNodeId ? <SettingsPanel /> : <NodesPanel />}
     </div>
   );
