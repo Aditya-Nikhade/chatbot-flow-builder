@@ -1,6 +1,7 @@
 // src/components/flow/TextNode.jsx
 import { Handle, Position } from 'reactflow';
 import { BsChatText } from 'react-icons/bs'; // Using react-icons
+import { FaWhatsapp } from 'react-icons/fa'; // Add WhatsApp icon
 import PropTypes from 'prop-types';
 
 /**
@@ -17,12 +18,20 @@ export default function TextNode({ data, selected }) {
   const borderClass = selected ? 'border-blue-500' : 'border-gray-300';
 
   return (
+    // Custom node UI for the flow builder
     <div className={`bg-white rounded-lg shadow-md border ${borderClass} w-64`}>
       {/* Node Header */}
       <div className="bg-teal-200 px-3 py-1 rounded-t-lg flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BsChatText size={12} />
           <p className="text-xs font-bold">Send Message</p>
+        </div>
+
+        <div
+          className="flex items-center justify-center bg-white rounded-full shadow ml-2"
+          style={{ width: 32, height: 32, padding: 3 }}
+        >
+          <FaWhatsapp size={20} className="text-green-500" />
         </div>
       </div>
 

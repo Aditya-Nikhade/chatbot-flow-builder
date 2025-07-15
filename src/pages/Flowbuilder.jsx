@@ -4,6 +4,8 @@ import FlowCanvas from '@/components/flow/FlowCanvas';
 import SidePanel from '@/components/flow/SidePanel';
 import { Toaster } from 'react-hot-toast'; // Import Toaster
 
+//This the component that holds all the things together.
+
 export default function FlowBuilderPage() {
   return (
     <div className="h-screen w-screen bg-gray-50">
@@ -18,6 +20,7 @@ export default function FlowBuilderPage() {
           </div>
         </ReactFlowProvider>
       </main>
+      {/*A toast ui is added for notifications and errors.*/}
       <Toaster position="top-center" />
     </div>
   );

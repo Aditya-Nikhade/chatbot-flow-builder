@@ -8,6 +8,7 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
+  MarkerType, // <-- 1. IMPORT MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import useFlowStore from '@/store/flowStore';
@@ -18,8 +19,21 @@ const nodeTypes = {
   textNode: TextNode,
 };
 
+// --- 2. DEFINE YOUR POLISHED DEFAULT EDGE OPTIONS ---
+const defaultEdgeOptions = {
+  style: {
+    strokeWidth: 2, // Make the line a bit thicker
+    stroke: '#6b7280', // A nice professional gray (Tailwind's gray-500)
+  },
+  markerEnd: {
+    type: MarkerType.ArrowClosed, // The type of the arrowhead (filled)
+    color: '#6b7280', // Match the line color
+  },
+};
+// ---------------------------------------------------
+
 export default function FlowCanvas() {
-  // Get initial state and actions from the store
+  // Get state and actions from the global store
   const storeNodes = useFlowStore((state) => state.nodes);
   const storeEdges = useFlowStore((state) => state.edges);
   const setStoreNodes = useFlowStore((state) => state.setNodes);
@@ -27,24 +41,23 @@ export default function FlowCanvas() {
   const setSelectedNodeId = useFlowStore((state) => state.setSelectedNodeId);
   const loadFlow = useFlowStore((state) => state.loadFlow);
 
-  // Use local state, initialized from the store.
+  // Local state for nodes and edges, synced with the store
   const [nodes, setNodes, onNodesChangeLocal] = useNodesState(storeNodes);
   const [edges, setEdges, onEdgesChangeLocal] = useEdgesState(storeEdges);
 
   const showEmptyState = nodes.length == 0;
 
+  // Handle node changes (move, select, etc.) and sync to store
   const onNodesChange = useCallback(
     (changes) => {
-      // First, apply the changes to the local state handler from the hook
       onNodesChangeLocal(changes);
-
-      // Then, calculate the new state and sync it to the global store
       const newNodes = applyNodeChanges(changes, nodes);
       setStoreNodes(newNodes);
     },
     [onNodesChangeLocal, nodes, setStoreNodes]
   );
 
+  // Handle edge changes (delete, update) and sync to store
   const onEdgesChange = useCallback(
     (changes) => {
       onEdgesChangeLocal(changes);
@@ -54,6 +67,7 @@ export default function FlowCanvas() {
     [onEdgesChangeLocal, edges, setStoreEdges]
   );
 
+  // Keep local state in sync with store (for undo/redo, load, etc.)
   useEffect(() => {
     setNodes(storeNodes);
   }, [storeNodes, setNodes]);
@@ -62,11 +76,13 @@ export default function FlowCanvas() {
     setEdges(storeEdges);
   }, [storeEdges, setEdges]);
 
+  // Load flow from localStorage on mount
   useEffect(() => {
     loadFlow();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Handle connecting two nodes (add an edge)
   const onConnect = useCallback(
     (connection) => {
       const sourceHasEdge = edges.some(
@@ -86,11 +102,13 @@ export default function FlowCanvas() {
   const reactFlowWrapper = useRef(null);
   const { screenToFlowPosition } = useReactFlow();
 
+  // Allow drag-over for dropping new nodes
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  // Handle dropping a new node onto the canvas
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -117,11 +135,13 @@ export default function FlowCanvas() {
     [nodes, screenToFlowPosition, setNodes, setStoreNodes]
   );
 
+  // Select a node (for editing in the side panel)
   const onNodeClick = useCallback(
     (_, node) => setSelectedNodeId(node.id),
     [setSelectedNodeId]
   );
 
+  // Deselect node when clicking on empty canvas
   const onPaneClick = useCallback(
     () => setSelectedNodeId(null),
     [setSelectedNodeId]
@@ -129,6 +149,7 @@ export default function FlowCanvas() {
 
   return (
     <div className="relative h-full w-full" ref={reactFlowWrapper}>
+      {/* Show empty state when there are no nodes */}
       {showEmptyState && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-gray-400">
           <p className="text-2xl font-bold">Chatbot Flow Builder</p>
@@ -136,6 +157,7 @@ export default function FlowCanvas() {
         </div>
       )}
 
+      {/* Main React Flow canvas */}
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -148,6 +170,7 @@ export default function FlowCanvas() {
         onDragOver={onDragOver}
         onDrop={onDrop}
         fitView
+        defaultEdgeOptions={defaultEdgeOptions} // <-- 3. PASS THE OPTIONS AS A PROP
       >
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>
