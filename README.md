@@ -1,4 +1,9 @@
 # BiteSpeed Frontend Task: Chatbot Flow Builder
+
+![Build Status](https://img.shields.io/github/actions/workflow/status/Aditya-Nikhade/chatbot-flow-builder/ci.yml?branch=main)
+![Vercel](https://vercelbadge.vercel.app/api/Aditya-Nikhade/chatbot-flow-builder)
+![License](https://img.shields.io/github/license/Aditya-Nikhade/chatbot-flow-builder)
+
 Hi! THANKS FOR READING THIS! I have completed the task for building the chatbot flow builder. Below is the live link.
 **✨ Live Demo:** [**https://chatbot-flow-builder-anikhade.vercel.app/**](https://chatbot-flow-builder-anikhade.vercel.app/) ✨
 
@@ -38,7 +43,7 @@ I have implemented all the features described in the task and have added minor a
 
 ## ⚙️ Professional Touch
 
-#The task did not mention much about adding extra features, but I made sure to follow production-grade practices to make this project.
+**The task did not mention much about adding extra features, but I made sure to follow production-grade practices to make this project.**
 
 -   **Automated Testing (Playwright):** Ran the tests using npx playwright test --ui
 -   **Continuous Integration (GitHub Actions):** On every pull request, a CI pipeline automatically runs the linter and the full Playwright E2E test suite.
@@ -50,10 +55,10 @@ I have implemented all the features described in the task and have added minor a
 
 ## 💡 Future Improvements
 
-To make a full-fleged application, in the future we can add the following:
+To make a full-fledged application, in the future we can add the following:
 
 1.  **More Node Types:** The extensible architecture allows us to easily add new message types like Images, Quick Replies, or User Input fields.
-2.  **User Authentication:** We can Add Google/JWT authentication too.
+2.  **User Authentication:** We can add Google/JWT authentication too.
 3.  **Personalised Space:** With the user created, he/she can have a personal feature for having a saved projects list and much more personalization.
 
 ---
@@ -77,10 +82,6 @@ To make a full-fleged application, in the future we can add the following:
     npm run dev
     ```
 5.  **Run tests:**
-    ```bash
-    npm run test 
-    ```
-    OR
     ```bash
     npx playwright test --ui 
     ```
