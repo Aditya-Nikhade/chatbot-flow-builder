@@ -25,7 +25,7 @@ jobs:
         run: npm run lint
 
       - name: Run Playwright tests
-        run: npm run test # Assuming your test script is "test"
+        run: npm run test 
 
       - name: Build project
         run: npm run build
